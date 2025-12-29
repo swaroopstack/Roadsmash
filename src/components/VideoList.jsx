@@ -1,20 +1,23 @@
-export default function VideoList({ courseId, course, setCourse }) {
-  function toggleDone(index) {
+export default function VideoList({
+  courseId,
+  course,
+  setCourse,
+  showToday,
+}) {
+  function toggleDone(videoId) {
     const today = new Date().toDateString();
 
-    // deep immutability
     let updated = {
       ...course,
-      videos: course.videos.map((v, i) =>
-        i === index ? { ...v, done: !v.done } : v
+      videos: course.videos.map((v) =>
+        v.id === videoId ? { ...v, done: !v.done } : v
       ),
     };
 
-    const turnedOn = !course.videos[index].done;
+    const oldVideo = course.videos.find((v) => v.id === videoId);
+    const turnedOn = !oldVideo.done;
 
-    // handle streak logic only when marking done
     if (turnedOn) {
-      // new day?
       if (course.lastActive !== today) {
         updated.completedToday = 0;
       }
@@ -24,7 +27,7 @@ export default function VideoList({ courseId, course, setCourse }) {
 
       if (updated.completedToday >= updated.pace) {
         updated.streak = (updated.streak || 0) + 1;
-        updated.completedToday = 0; // reset after hitting daily goal
+        updated.completedToday = 0;
       }
     }
 
@@ -32,15 +35,22 @@ export default function VideoList({ courseId, course, setCourse }) {
     localStorage.setItem(`course_${courseId}`, JSON.stringify(updated));
   }
 
+  let videosToShow = course.videos;
+
+  if (showToday) {
+    const remaining = course.videos.filter((v) => !v.done);
+    videosToShow = remaining.slice(0, course.pace || 1);
+  }
+
   return (
     <ul>
-      {course.videos.map((v, i) => (
+      {videosToShow.map((v) => (
         <li key={v.id}>
           <label>
             <input
               type="checkbox"
               checked={v.done}
-              onChange={() => toggleDone(i)}
+              onChange={() => toggleDone(v.id)}
             />
             {v.title} — {v.duration}
           </label>
