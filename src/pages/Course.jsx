@@ -16,6 +16,28 @@ export default function Course() {
 
   if (!course) return <p>Course not found.</p>;
 
+  function handleRestart() {
+    const confirmReset = window.confirm(
+      "Restart this course? All progress will be cleared, but the playlist remains."
+    );
+
+    if (!confirmReset) return;
+
+    const updated = {
+      ...course,
+      videos: course.videos.map((v) => ({ ...v, done: false })),
+
+      completedAt: null,
+
+      streak: 0,
+      completedToday: 0,
+      lastActive: null,
+    };
+
+    setCourse(updated);
+    localStorage.setItem(`course_${id}`, JSON.stringify(updated));
+  }
+
   return (
     <div style={{ padding: 24 }}>
       <h2>{course.title}</h2>
@@ -37,6 +59,12 @@ export default function Course() {
       )}
 
       <p>Streak: {course.streak || 0} days</p>
+
+      {course.completedAt && (
+        <button style={{ marginBottom: 12 }} onClick={handleRestart}>
+          Restart course
+        </button>
+      )}
 
       <ProgressBar videos={course.videos} course={course} />
 
