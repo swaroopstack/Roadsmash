@@ -9,7 +9,20 @@ export function extractPlaylistId(url) {
 
 const API = "https://www.googleapis.com/youtube/v3";
 
-// ----- fetch playlist items -----
+// --- FETCH PLAYLIST TITLE ---
+export async function fetchPlaylistTitle(playlistId, apiKey) {
+  const res = await fetch(
+    `${API}/playlists?part=snippet&id=${playlistId}&key=${apiKey}`
+  );
+
+  const data = await res.json();
+
+  if (data.error) throw new Error(data.error.message);
+
+  return data.items?.[0]?.snippet?.title || "Playlist";
+}
+
+// --- FETCH PLAYLIST ITEMS ---
 export async function fetchPlaylistItems(playlistId, apiKey) {
   let items = [];
   let nextPageToken = "";
@@ -37,7 +50,7 @@ export async function fetchPlaylistItems(playlistId, apiKey) {
   return items;
 }
 
-// ----- duration helpers -----
+// --- FORMAT ISO DURATION ---
 function formatDuration(iso) {
   const match = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
 
@@ -53,6 +66,7 @@ function formatDuration(iso) {
   return `${mm}:${ss}`;
 }
 
+// --- FETCH DURATIONS ---
 export async function fetchDurations(videoIds, apiKey) {
   const chunks = [];
   for (let i = 0; i < videoIds.length; i += 50) {

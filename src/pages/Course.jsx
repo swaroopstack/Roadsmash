@@ -19,9 +19,15 @@ export default function Course() {
     <div style={{ padding: 24 }}>
       <h2>{course.title}</h2>
 
-      <ProgressBar videos={course.videos} />
+      <ProgressBar videos={course.videos} course={course} />
 
-      <PaceSelector videos={course.videos} />
+      <PaceSelector
+        videos={course.videos}
+        courseId={id}
+        course={course}
+        setCourse={setCourse}
+      />
+
 
       <VideoList courseId={id} course={course} setCourse={setCourse} />
     </div>

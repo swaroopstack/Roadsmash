@@ -1,9 +1,8 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
-export default function PaceSelector({ videos }) {
-  const [perDay, setPerDay] = useState(1);
+export default function PaceSelector({ videos, courseId, course, setCourse }) {
+  const [perDay, setPerDay] = useState(course.pace || 1);
 
-  // compute values when videos or perDay change
   const info = useMemo(() => {
     const total = videos.length;
     const completed = videos.filter(v => v.done).length;
@@ -15,13 +14,25 @@ export default function PaceSelector({ videos }) {
     finish.setDate(finish.getDate() + daysNeeded);
 
     return {
-      total,
-      completed,
       remaining,
       daysNeeded,
-      finishDate: finish.toDateString(),
+      finishDate: finish.toISOString(),
+      finishLabel: finish.toDateString(),
     };
   }, [videos, perDay]);
+
+  // save whenever pacing changes
+  useEffect(() => {
+    const updated = {
+      ...course,
+      pace: perDay,
+      deadline: info.finishDate,
+      lastChecked: new Date().toISOString(),
+    };
+
+    setCourse(updated);
+    localStorage.setItem(`course_${courseId}`, JSON.stringify(updated));
+  }, [perDay, info.finishDate]);
 
   return (
     <div style={{ marginBottom: 16 }}>
@@ -35,10 +46,10 @@ export default function PaceSelector({ videos }) {
         />
       </label>
 
-      <div style={{ marginTop: 8 }}>
+      <div style={{ marginTop: 8, fontSize: 14 }}>
         <div>Remaining: {info.remaining}</div>
         <div>Days needed: {info.daysNeeded}</div>
-        <div>Estimated finish: {info.finishDate}</div>
+        <div>Finish by: {info.finishLabel}</div>
       </div>
     </div>
   );

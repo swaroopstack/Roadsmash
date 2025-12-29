@@ -4,6 +4,7 @@ import {
   extractPlaylistId,
   fetchPlaylistItems,
   fetchDurations,
+  fetchPlaylistTitle,
 } from "../utils/yt";
 
 export default function PlaylistInput() {
@@ -30,16 +31,19 @@ export default function PlaylistInput() {
         return;
       }
 
-      // 1) fetch playlist videos
+      // 1) title
+      const title = await fetchPlaylistTitle(playlistId, apiKey);
+
+      // 2) videos
       const items = await fetchPlaylistItems(playlistId, apiKey);
 
-      // 2) fetch durations
+      // 3) durations
       const durations = await fetchDurations(
         items.map((i) => i.videoId),
         apiKey
       );
 
-      // 3) combine data
+      // merge
       const courseVideos = items.map((i) => {
         const d = durations.find((x) => x.id === i.videoId);
         return {
@@ -54,9 +58,22 @@ export default function PlaylistInput() {
 
       const courseData = {
         id,
-        title: "Imported Playlist",
+        title,
         videos: courseVideos,
+
+        pace: 1,
+        deadline: null,
+
+        createdAt: new Date().toISOString(),
+        lastChecked: new Date().toISOString(),
+
+        // streak data
+        streak: 0,
+        lastActive: null,
+        completedToday: 0,
       };
+
+
 
       localStorage.setItem(`course_${id}`, JSON.stringify(courseData));
 
@@ -70,15 +87,38 @@ export default function PlaylistInput() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} style={{ display: "flex", gap: 8 }}>
       <input
         placeholder="Paste YouTube playlist link"
         value={url}
+        disabled={loading}
         onChange={(e) => setUrl(e.target.value)}
+        style={{ flex: 1, padding: 8 }}
       />
+
       <button type="submit" disabled={loading}>
-        {loading ? "Importing..." : "Create"}
+        {loading ? "Fetching playlist…" : "Create"}
       </button>
+
+      {loading && (
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <div
+            style={{
+              width: 10,
+              height: 10,
+              borderRadius: "50%",
+              border: "2px solid #999",
+              borderTopColor: "transparent",
+              animation: "spin 1s linear infinite",
+            }}
+          />
+          <span style={{ fontSize: 12, opacity: 0.7 }}>
+            Fetching playlist…
+          </span>
+        </div>
+      )}
+
     </form>
   );
+
 }
