@@ -17,6 +17,20 @@ export default function PlaylistInput() {
     if (!url.trim()) return;
 
     const playlistId = extractPlaylistId(url);
+    // check if course already exists
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+
+      if (key.startsWith("course_")) {
+        const stored = JSON.parse(localStorage.getItem(key));
+
+        if (stored.playlistId === playlistId) {
+          navigate(`/course/${stored.id}`);
+          return;
+        }
+      }
+    }
+
     if (!playlistId) {
       alert("Invalid playlist link");
       return;
@@ -58,6 +72,8 @@ export default function PlaylistInput() {
 
       const courseData = {
         id,
+        playlistId,
+
         title,
         videos: courseVideos,
 
@@ -67,14 +83,13 @@ export default function PlaylistInput() {
         createdAt: new Date().toISOString(),
         lastChecked: new Date().toISOString(),
 
-        // streak data
         streak: 0,
         lastActive: null,
         completedToday: 0,
 
         completedAt: null,
-
       };
+
 
 
 
