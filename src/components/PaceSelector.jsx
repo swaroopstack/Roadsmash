@@ -35,13 +35,14 @@ export default function PaceSelector({ videos, courseId, course, setCourse }) {
   }, [perDay, info.finishDate]);
 
   return (
-    <div style={{ marginBottom: 16 }}>
+    <div style={{ marginBottom: 16, opacity: course.deadline && course.completedAt ? 0.6 : 1 }}>
       <label>
         Videos per day:{" "}
         <input
           type="number"
           min={1}
           value={perDay}
+          disabled={!!course.completedAt}
           onChange={(e) => setPerDay(Number(e.target.value))}
         />
       </label>
@@ -53,4 +54,5 @@ export default function PaceSelector({ videos, courseId, course, setCourse }) {
       </div>
     </div>
   );
+
 }

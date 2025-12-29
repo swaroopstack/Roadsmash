@@ -1,10 +1,10 @@
 export default function ProgressBar({ videos, course }) {
-  const completed = videos.filter(v => v.done).length;
+  const completed = videos.filter((v) => v.done).length;
   const percent = Math.round((completed / videos.length) * 100);
 
   let status = "";
 
-  if (course.deadline) {
+  if (course.deadline && !course.completedAt) {
     const today = new Date();
     const deadline = new Date(course.deadline);
 
@@ -42,9 +42,15 @@ export default function ProgressBar({ videos, course }) {
         />
       </div>
 
-      {status && (
+      {status && !course.completedAt && (
         <div style={{ marginTop: 6, fontSize: 13, opacity: 0.8 }}>
           Status: {status}
+        </div>
+      )}
+
+      {course.completedAt && (
+        <div style={{ marginTop: 6, fontSize: 13, color: "green" }}>
+          100% complete — great work.
         </div>
       )}
     </div>

@@ -5,6 +5,9 @@ export default function VideoList({
   showToday,
 }) {
   function toggleDone(videoId) {
+    // if course already completed — do nothing
+    if (course.completedAt) return;
+
     const today = new Date().toDateString();
 
     let updated = {
@@ -17,6 +20,7 @@ export default function VideoList({
     const oldVideo = course.videos.find((v) => v.id === videoId);
     const turnedOn = !oldVideo.done;
 
+    // streak logic only works if not completed and marking DONE
     if (turnedOn) {
       if (course.lastActive !== today) {
         updated.completedToday = 0;
@@ -31,13 +35,19 @@ export default function VideoList({
       }
     }
 
+    // check completion
+    const allDone = updated.videos.every((v) => v.done);
+    if (allDone) {
+      updated.completedAt = new Date().toISOString();
+    }
+
     setCourse(updated);
     localStorage.setItem(`course_${courseId}`, JSON.stringify(updated));
   }
 
   let videosToShow = course.videos;
 
-  if (showToday) {
+  if (showToday && !course.completedAt) {
     const remaining = course.videos.filter((v) => !v.done);
     videosToShow = remaining.slice(0, course.pace || 1);
   }
@@ -50,6 +60,7 @@ export default function VideoList({
             <input
               type="checkbox"
               checked={v.done}
+              disabled={!!course.completedAt}
               onChange={() => toggleDone(v.id)}
             />
             {v.title} — {v.duration}

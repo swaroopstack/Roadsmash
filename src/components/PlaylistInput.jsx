@@ -71,6 +71,9 @@ export default function PlaylistInput() {
         streak: 0,
         lastActive: null,
         completedToday: 0,
+
+        completedAt: null,
+
       };
 
 

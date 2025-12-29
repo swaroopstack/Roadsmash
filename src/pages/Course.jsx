@@ -20,6 +20,22 @@ export default function Course() {
     <div style={{ padding: 24 }}>
       <h2>{course.title}</h2>
 
+      {course.completedAt && (
+        <div
+          style={{
+            padding: 12,
+            marginTop: 8,
+            background: "#e6ffe6",
+            border: "1px solid #9cd29c",
+            borderRadius: 8,
+          }}
+        >
+          <strong>Course completed!</strong>
+          <br />
+          Finished on: {new Date(course.completedAt).toDateString()}
+        </div>
+      )}
+
       <p>Streak: {course.streak || 0} days</p>
 
       <ProgressBar videos={course.videos} course={course} />
