@@ -1,7 +1,11 @@
 export default function VideoList({ courseId, course, setCourse }) {
   function toggleDone(index) {
-    const updated = { ...course };
-    updated.videos[index].done = !updated.videos[index].done;
+    const updated = {
+      ...course,
+      videos: course.videos.map((v, i) =>
+        i === index ? { ...v, done: !v.done } : v
+      ),
+    };
 
     setCourse(updated);
     localStorage.setItem(`course_${courseId}`, JSON.stringify(updated));

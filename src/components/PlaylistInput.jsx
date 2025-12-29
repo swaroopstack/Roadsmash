@@ -1,33 +1,72 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  extractPlaylistId,
+  fetchPlaylistItems,
+  fetchDurations,
+} from "../utils/yt";
 
 export default function PlaylistInput() {
   const [url, setUrl] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-
     if (!url.trim()) return;
 
-    // 1) create unique course id
-    const id = crypto.randomUUID();
+    const playlistId = extractPlaylistId(url);
+    if (!playlistId) {
+      alert("Invalid playlist link");
+      return;
+    }
 
-    // 2) store mock playlist (temporary)
-    const courseData = {
-      id,
-      title: "My Test Playlist",
-      videos: [
-        { id: "1", title: "Intro", duration: "10:00", done: false },
-        { id: "2", title: "Part 1", duration: "08:30", done: false },
-        { id: "3", title: "Part 2", duration: "12:10", done: false }
-      ],
-    };
+    try {
+      setLoading(true);
 
-    localStorage.setItem(`course_${id}`, JSON.stringify(courseData));
+      const apiKey = import.meta.env.VITE_YT_API_KEY;
+      if (!apiKey) {
+        alert("API key missing");
+        return;
+      }
 
-    // 3) go to course page
-    navigate(`/course/${id}`);
+      // 1) fetch playlist videos
+      const items = await fetchPlaylistItems(playlistId, apiKey);
+
+      // 2) fetch durations
+      const durations = await fetchDurations(
+        items.map((i) => i.videoId),
+        apiKey
+      );
+
+      // 3) combine data
+      const courseVideos = items.map((i) => {
+        const d = durations.find((x) => x.id === i.videoId);
+        return {
+          id: i.videoId,
+          title: i.title,
+          duration: d?.duration || "00:00",
+          done: false,
+        };
+      });
+
+      const id = crypto.randomUUID();
+
+      const courseData = {
+        id,
+        title: "Imported Playlist",
+        videos: courseVideos,
+      };
+
+      localStorage.setItem(`course_${id}`, JSON.stringify(courseData));
+
+      navigate(`/course/${id}`);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to load playlist");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -37,7 +76,9 @@ export default function PlaylistInput() {
         value={url}
         onChange={(e) => setUrl(e.target.value)}
       />
-      <button type="submit">Create</button>
+      <button type="submit" disabled={loading}>
+        {loading ? "Importing..." : "Create"}
+      </button>
     </form>
   );
 }

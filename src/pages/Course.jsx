@@ -21,7 +21,7 @@ export default function Course() {
 
       <ProgressBar videos={course.videos} />
 
-      <PaceSelector />
+      <PaceSelector videos={course.videos} />
 
       <VideoList courseId={id} course={course} setCourse={setCourse} />
     </div>
