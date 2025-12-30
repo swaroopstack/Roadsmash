@@ -17,7 +17,8 @@ export default function PlaylistInput() {
     if (!url.trim()) return;
 
     const playlistId = extractPlaylistId(url);
-    // check if course already exists
+
+    // duplicate check
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
 
@@ -45,20 +46,15 @@ export default function PlaylistInput() {
         return;
       }
 
-      // 1) title
       const title = await fetchPlaylistTitle(playlistId, apiKey);
-
-      // 2) videos
       const items = await fetchPlaylistItems(playlistId, apiKey);
 
-      // 3) durations
       const durations = await fetchDurations(
         items.map((i) => i.videoId),
         apiKey
       );
 
-      // merge
-      const courseVideos = items.map((i) => {
+      const videos = items.map((i) => {
         const d = durations.find((x) => x.id === i.videoId);
         return {
           id: i.videoId,
@@ -70,31 +66,22 @@ export default function PlaylistInput() {
 
       const id = crypto.randomUUID();
 
-      const courseData = {
+      const course = {
         id,
         playlistId,
-
         title,
-        videos: courseVideos,
-
+        videos,
         pace: 1,
         deadline: null,
-
         createdAt: new Date().toISOString(),
         lastChecked: new Date().toISOString(),
-
         streak: 0,
         lastActive: null,
         completedToday: 0,
-
         completedAt: null,
       };
 
-
-
-
-      localStorage.setItem(`course_${id}`, JSON.stringify(courseData));
-
+      localStorage.setItem(`course_${id}`, JSON.stringify(course));
       navigate(`/course/${id}`);
     } catch (err) {
       console.error(err);
@@ -105,38 +92,23 @@ export default function PlaylistInput() {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: "flex", gap: 8 }}>
-      <input
-        placeholder="Paste YouTube playlist link"
-        value={url}
-        disabled={loading}
-        onChange={(e) => setUrl(e.target.value)}
-        style={{ flex: 1, padding: 8 }}
-      />
+    <form onSubmit={handleSubmit} className="card" style={{ marginBottom: 18 }}>
+      <label style={{ fontSize: "0.9rem", opacity: 0.8 }}>
+        Import playlist
+      </label>
 
-      <button type="submit" disabled={loading}>
-        {loading ? "Fetching playlist…" : "Create"}
-      </button>
+      <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
+        <input
+          placeholder="Paste YouTube playlist link"
+          value={url}
+          disabled={loading}
+          onChange={(e) => setUrl(e.target.value)}
+        />
 
-      {loading && (
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <div
-            style={{
-              width: 10,
-              height: 10,
-              borderRadius: "50%",
-              border: "2px solid #999",
-              borderTopColor: "transparent",
-              animation: "spin 1s linear infinite",
-            }}
-          />
-          <span style={{ fontSize: 12, opacity: 0.7 }}>
-            Fetching playlist…
-          </span>
-        </div>
-      )}
-
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? "Fetching…" : "Create"}
+        </button>
+      </div>
     </form>
   );
-
 }
