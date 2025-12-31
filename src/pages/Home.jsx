@@ -65,9 +65,9 @@ export default function Home() {
             position: "absolute",
             inset: 0,
             backgroundImage: `
-            linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px),
-            linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px)
-          `,
+              linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+              linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px)
+            `,
             backgroundSize: "80px 80px",
             animation: "gridMove 20s linear infinite",
           }}
@@ -88,6 +88,7 @@ export default function Home() {
             animation: "float 8s ease-in-out infinite",
           }}
         />
+
         <div
           style={{
             position: "absolute",
@@ -112,7 +113,7 @@ export default function Home() {
             margin: "0 auto",
           }}
         >
-          {/* Header */}
+          {/* header stays empty on purpose */}
           <div
             style={{
               display: "flex",
@@ -121,25 +122,10 @@ export default function Home() {
               marginBottom: 100,
             }}
           >
-            <div
-              style={{
-                fontSize: "1.5rem",
-                fontWeight: 700,
-                background:
-                  "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-              }}
-            >
-              <Zap size={28} style={{ color: "#6366f1" }} />
-              NEXUS
-            </div>
+            <div />
           </div>
 
-          {/* Hero content */}
+          {/* HERO */}
           <div
             style={{
               maxWidth: 800,
@@ -147,63 +133,35 @@ export default function Home() {
               textAlign: "center",
             }}
           >
-            <div
-              style={{
-                display: "inline-block",
-                padding: "8px 20px",
-                background: "rgba(99, 102, 241, 0.1)",
-                border: "1px solid rgba(99, 102, 241, 0.3)",
-                borderRadius: 999,
-                fontSize: "0.875rem",
-                color: "#a5b4fc",
-                marginBottom: 32,
-                backdropFilter: "blur(10px)",
-              }}
-            >
-              ⚡ Next-Gen Learning Platform
-            </div>
-
             <h1
               style={{
-                fontSize: "4.5rem",
+                fontSize: "4rem",
                 lineHeight: 1.1,
                 marginBottom: 24,
                 fontWeight: 800,
                 background:
-                  "linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%)",
+                  "linear-gradient(135deg, #ffffff 0%, #c7d2fe 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
-                letterSpacing: "-0.02em",
               }}
             >
-              Escape the algorithm.
-              <br />
-              <span
-                style={{
-                  background:
-                    "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                }}
-              >
-                Finish the course.
-              </span>
+              Turn playlists into discipline.
             </h1>
 
             <p
               style={{
-                color: "#94a3b8",
-                fontSize: "1.25rem",
+                color: "#9ca3af",
+                fontSize: "1.2rem",
                 marginBottom: 48,
                 lineHeight: 1.6,
               }}
             >
-              Transform any YouTube playlist into a structured learning journey.
+              No recommendations. No infinite scrolling.
               <br />
-              Track progress, build momentum, achieve mastery.
+              Just progress — with a visible end.
             </p>
 
-            {/* Input section */}
+            {/* INPUT */}
             <div
               style={{
                 maxWidth: 600,
@@ -278,17 +236,17 @@ export default function Home() {
                 {
                   icon: Target,
                   title: "Focused",
-                  desc: "Clear path to completion",
+                  desc: "Clear path. No clutter.",
                 },
                 {
                   icon: TrendingUp,
-                  title: "Track Progress",
-                  desc: "Visualize your journey",
+                  title: "Visible progress",
+                  desc: "See exactly where you are.",
                 },
                 {
                   icon: Zap,
-                  title: "Stay Motivated",
-                  desc: "Build learning momentum",
+                  title: "Momentum",
+                  desc: "Stay consistent — daily.",
                 },
               ].map((feature, i) => (
                 <div
@@ -306,6 +264,7 @@ export default function Home() {
                     size={32}
                     style={{ color: "#6366f1", marginBottom: 16 }}
                   />
+
                   <h3
                     style={{
                       color: "#fff",
@@ -315,6 +274,7 @@ export default function Home() {
                   >
                     {feature.title}
                   </h3>
+
                   <p style={{ color: "#94a3b8", fontSize: "0.875rem" }}>
                     {feature.desc}
                   </p>
@@ -383,7 +343,6 @@ export default function Home() {
               display: "flex",
               alignItems: "center",
               gap: 8,
-              transition: "all 0.3s ease",
               boxShadow: "0 4px 20px rgba(99, 102, 241, 0.4)",
             }}
           >
@@ -414,8 +373,6 @@ export default function Home() {
                   border: "1px solid rgba(99, 102, 241, 0.2)",
                   borderRadius: 20,
                   backdropFilter: "blur(20px)",
-                  transition: "all 0.3s ease",
-                  cursor: "pointer",
                 }}
               >
                 <div
@@ -437,7 +394,6 @@ export default function Home() {
                     background: "rgba(15, 23, 42, 0.8)",
                     overflow: "hidden",
                     marginBottom: 16,
-                    border: "1px solid rgba(99, 102, 241, 0.2)",
                   }}
                 >
                   <div
@@ -447,8 +403,6 @@ export default function Home() {
                       background:
                         "linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%)",
                       transition: "width 0.5s ease",
-                      boxShadow:
-                        "0 0 10px rgba(99, 102, 241, 0.5)",
                     }}
                   />
                 </div>
@@ -465,13 +419,9 @@ export default function Home() {
                   <span>
                     {completed}/{c.videos.length} completed
                   </span>
+
                   {percent === 100 ? (
-                    <span
-                      style={{
-                        color: "#6ee7a8",
-                        fontWeight: 600,
-                      }}
-                    >
+                    <span style={{ color: "#6ee7a8", fontWeight: 600 }}>
                       ✓ Done
                     </span>
                   ) : (
@@ -484,17 +434,12 @@ export default function Home() {
                   style={{
                     padding: "8px 16px",
                     background: "rgba(239, 68, 68, 0.1)",
-                    border:
-                      "1px solid rgba(239, 68, 68, 0.3)",
+                    border: "1px solid rgba(239, 68, 68, 0.3)",
                     borderRadius: 8,
                     color: "#ef4444",
-                    cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
                     gap: 8,
-                    fontSize: "0.875rem",
-                    fontWeight: 500,
-                    transition: "all 0.3s ease",
                   }}
                 >
                   <Trash2 size={16} />
