@@ -14,7 +14,22 @@ export default function Course() {
     if (data) setCourse(JSON.parse(data));
   }, [id]);
 
-  if (!course) return <p>Course not found.</p>;
+  if (!course)
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "#fff",
+          background:
+            "linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1419 100%)",
+        }}
+      >
+        Course not found.
+      </div>
+    );
 
   function handleRestart() {
     const confirmReset = window.confirm(
@@ -26,9 +41,7 @@ export default function Course() {
     const updated = {
       ...course,
       videos: course.videos.map((v) => ({ ...v, done: false })),
-
       completedAt: null,
-
       streak: 0,
       completedToday: 0,
       lastActive: null,
@@ -39,62 +52,154 @@ export default function Course() {
   }
 
   return (
-    <div style={{ padding: 24 }}>
-      <h2>{course.title}</h2>
-
-      {course.completedAt && (
-        <div
+    <div
+      style={{
+        minHeight: "100vh",
+        background:
+          "linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1419 100%)",
+        padding: "60px 24px",
+      }}
+    >
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+        {/* Title */}
+        <h1
           style={{
-            padding: 12,
-            marginTop: 8,
-            background: "#e6ffe6",
-            border: "1px solid #9cd29c",
-            borderRadius: 8,
+            color: "#fff",
+            marginBottom: 12,
+            fontSize: "2.4rem",
+            fontWeight: 800,
           }}
         >
-          <strong>Course completed!</strong>
-          <br />
-          Finished on: {new Date(course.completedAt).toDateString()}
-        </div>
-      )}
+          {course.title}
+        </h1>
 
-      <p>Streak: {course.streak || 0} days</p>
+        <p style={{ color: "#9ca3af", marginBottom: 24 }}>
+          Streak: <strong>{course.streak || 0}</strong> days
+        </p>
 
-      {course.completedAt && (
-        <button style={{ marginBottom: 12 }} onClick={handleRestart}>
-          Restart course
-        </button>
-      )}
+        {/* Completion card */}
+        {course.completedAt && (
+          <div
+            style={{
+              padding: 16,
+              marginBottom: 16,
+              borderRadius: 14,
+              background:
+                "linear-gradient(135deg, rgba(16, 185, 129,0.15), rgba(16, 185, 129,0.05))",
+              border: "1px solid rgba(16,185,129,0.4)",
+              color: "#d1fae5",
+            }}
+          >
+            <strong>Course completed!</strong>
+            <br />
+            Finished on {new Date(course.completedAt).toDateString()}
+          </div>
+        )}
 
-      <ProgressBar videos={course.videos} course={course} />
+        {/* Restart */}
+        {course.completedAt && (
+          <button
+            onClick={handleRestart}
+            style={{
+              padding: "10px 16px",
+              borderRadius: 10,
+              background: "rgba(239, 68, 68, 0.15)",
+              border: "1px solid rgba(239,68,68,0.4)",
+              color: "#fecaca",
+              marginBottom: 16,
+              cursor: "pointer",
+            }}
+          >
+            Restart course
+          </button>
+        )}
 
-      <PaceSelector
-        videos={course.videos}
-        courseId={id}
-        course={course}
-        setCourse={setCourse}
-      />
-
-      <div style={{ marginTop: 12 }}>
-        <button onClick={() => setShowToday(false)} disabled={!showToday}>
-          All
-        </button>
-
-        <button
-          onClick={() => setShowToday(true)}
-          disabled={showToday}
-          style={{ marginLeft: 8 }}
+        {/* Progress */}
+        <div
+          style={{
+            padding: 16,
+            borderRadius: 18,
+            background: "rgba(15, 23, 42, 0.6)",
+            border: "1px solid rgba(99,102,241,0.2)",
+            marginBottom: 16,
+          }}
         >
-          Today
-        </button>
-      </div>
+          <ProgressBar videos={course.videos} course={course} />
+        </div>
 
-      <VideoList
-        courseId={id}
-        course={course}
-        setCourse={setCourse}
-        showToday={showToday}
-      />
+        {/* Pace */}
+        <div
+          style={{
+            padding: 16,
+            borderRadius: 18,
+            background: "rgba(15, 23, 42, 0.6)",
+            border: "1px solid rgba(99,102,241,0.2)",
+            marginBottom: 16,
+          }}
+        >
+          <PaceSelector
+            videos={course.videos}
+            courseId={id}
+            course={course}
+            setCourse={setCourse}
+          />
+        </div>
+
+        {/* Filter buttons */}
+        <div style={{ marginBottom: 16 }}>
+          <button
+            onClick={() => setShowToday(false)}
+            disabled={!showToday}
+            style={{
+              padding: "8px 16px",
+              borderRadius: 10,
+              border: "1px solid rgba(99,102,241,0.3)",
+              background: !showToday
+                ? "rgba(99,102,241,0.3)"
+                : "transparent",
+              color: "#fff",
+              marginRight: 8,
+              cursor: showToday ? "pointer" : "default",
+            }}
+          >
+            All
+          </button>
+
+          <button
+            onClick={() => setShowToday(true)}
+            disabled={showToday}
+            style={{
+              padding: "8px 16px",
+              borderRadius: 10,
+              border: "1px solid rgba(99,102,241,0.3)",
+              background: showToday
+                ? "rgba(99,102,241,0.3)"
+                : "transparent",
+              color: "#fff",
+              cursor: showToday ? "default" : "pointer",
+            }}
+          >
+            Today
+          </button>
+        </div>
+
+        {/* Video List */}
+        <div
+          style={{
+            padding: 16,
+            borderRadius: 18,
+            background: "rgba(15, 23, 42, 0.6)",
+            border: "1px solid rgba(99,102,241,0.2)",
+          }}
+        >
+          <VideoList
+            courseId={id}
+            course={course}
+            setCourse={setCourse}
+            showToday={showToday}
+          />
+        </div>
+      </div>
     </div>
   );
 }
